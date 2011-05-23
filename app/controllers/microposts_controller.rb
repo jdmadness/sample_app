@@ -1,5 +1,5 @@
 class MicropostsController < ApplicationController
-  before_filter :authenticate, :only => [:create, :destroy]
+  before_filter :authenticate, :only => [ :create, :destroy, :index ]
   before_filter :authorized_user, :only => :destroy
 
   def create
@@ -16,6 +16,12 @@ class MicropostsController < ApplicationController
   def destroy
     @micropost.destroy
     redirect_back_or root_path
+  end
+
+  def index
+    @user = User.find(params[:user_id])
+    @microposts = @user.microposts.paginate(:page => params[:page])
+    @title = "#{@user.name}'s microposts"
   end
 
   private
